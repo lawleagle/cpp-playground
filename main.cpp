@@ -1,58 +1,76 @@
 #include <iostream>
 #include <fstream>
 
-void interclasare()
-{
-    std::ifstream f1("file1.txt"); // "cin" but from file1.txt instead of the console
-    std::ifstream f2("file2.txt"); // "cin" but from file2.txt instead of the console
-    std::ofstream f("file.out"); // "cout" but to file.txt instead of the console
+#define MOD 1000000007
+#define MAX_SIZE 200001
 
+std::ifstream f("transport.in");
+std::ofstream g("transport.out");
 
-    int an; // number of elements from f1
-    f1 >> an;
+int n, c;
+int x[MAX_SIZE];
+int d[MAX_SIZE];
 
-    // read first element from array in f1
-    int a; // number from f1
-    f1 >> a;
-
-
-    int bn; // number of elements from f2
-    f2 >> bn;
-
-    // read first element from array in f2
-    int b; // number from f2
-    f2 >> b;
-
-
-    // interclasare
-    int ai = 0; // index in a
-    int bi = 0; // index in b
-    while (ai < an && bi < bn) {
-        if (a < b) {
-            f << a << ' ';
-            f1 >> a;
-            ai++;
-        } else {
-            f << b << ' ';
-            f2 >> b;
-            bi++;
+int pow(int a, int b) {
+    int r = 1;
+    while (b != 0) {
+        while (b%2 == 0) {
+            a = 1ll*a*a % MOD;
+            b /= 2;
         }
+        r = 1ll*r*a % MOD;
+        b--;
     }
-    while (ai < an) {
-        f << a << ' ';
-        f1 >> a;
-        ai++;
-    }
-    while (bi < bn) {
-        f << b << ' ';
-        f2 >> b;
-        bi++;
-    }
-
-    f << std::endl;
+    return r;
 }
 
-int main() {
-    interclasare();
+void regio()
+{
+    int k = 0;
+    for (int i = 0; i < n; ++i) {
+        for (int j = i+1; j < n; ++j) {
+            if (c * (x[j] - x[i]) == d[i] + d[j]) {
+                k++;
+                k %= MOD;
+            }
+        }
+    }
+    g << k << std::endl;
+}
+
+void express()
+{
+    int k = 0;
+    for (int i = 0; i < n; ++i) {
+        for (int j = i+1; j < n; ++j) {
+            if (c * (x[j] - x[i]) == d[i] + d[j]) {
+                k += pow(2, (j-i-1));
+                k %= MOD;
+            }
+        }
+    }
+    g << k << std::endl;
+}
+
+int main()
+{
+    int t;
+    f >> t;
+
+    f >> n >> c;
+    for (int i = 0; i < n; ++i) {
+        f >> x[i] >> d[i];
+    }
+
+    switch (t) {
+        case 1: {
+            regio();
+        } break;
+
+        case 2: {
+            express();
+        } break;
+    }
+
     return 0;
 }
